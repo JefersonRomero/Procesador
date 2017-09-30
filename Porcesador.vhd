@@ -30,9 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity Porcesador is
-    Port ( rst : in  STD_LOGIC;
-           CLK : in  STD_LOGIC;
-           Address : out  STD_LOGIC_VECTOR (31 DOWNTO 0));
+    Port ( CLKIn : in  STD_LOGIC;
+			  rstIn : in  STD_LOGIC;
+           AddressOut : out  STD_LOGIC_VECTOR (31 DOWNTO 0));
 end Porcesador;
 
 architecture Behavioral of Porcesador is
@@ -51,35 +51,49 @@ PORT(
          Salida : out  STD_LOGIC_VECTOR (31 DOWNTO 0));
 	END COMPONENT;	
 	
+COMPONENT IM
+PORT(	
+			Address : in  STD_LOGIC_vector(31 downto 0);
+         rst : in  STD_LOGIC;
+         instruccion : out  STD_LOGIC_vector(31 downto 0));
+	END COMPONENT;
+	
 
-SIGNAL AUX_NUM1: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
-SIGNAL AUX_NUM2: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
-SIGNAL AUX_NUM3: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
+SIGNAL AUX_nPC: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
+SIGNAL AUX_PC: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
+SIGNAL AUX_SUMADOR: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
+SIGNAL AUX_IM: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
 	
 begin
 
 
 
 nPC: Registro_32 PORT MAP(
-	CLK => CLK,
-	rst => rst,
-	dataIn => AUX_NUM3, 
-   DataOut =>AUX_NUM1
+	CLK => CLKIn,
+	rst => rstIn,
+	dataIn => AUX_SUMADOR, 
+   DataOut =>AUX_nPC
 );
 
 PC: Registro_32 PORT MAP(
-	CLK => CLK,
-	rst => rst,
-	dataIn => AUX_NUM1, 
-   DataOut =>AUX_NUM2
+	CLK => CLKIn,
+	rst => rstIn,
+	dataIn => AUX_nPC, 
+   DataOut =>AUX_PC
 );
 
 SUM: Sumador PORT MAP(
-	Dato => AUX_NUM2,
-	Salida => AUX_NUM3
+	Dato => AUX_PC,
+	Salida => AUX_SUMADOR
 );
 
-Address <= AUX_NUM3;
+Instrution_Memory: IM PORT MAP(
+	Address => AUX_PC,
+   rst => rstIn,
+   instruccion => AUX_IM
+);
+
+AddressOut <= AUX_IM;
 
 end Behavioral;
 
