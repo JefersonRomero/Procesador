@@ -39,11 +39,14 @@ end ALU;
 
 architecture Behavioral of ALU is
 
-
 -- ADD : 000000
 -- SUB : 000001
 -- AND : 000010
--- OR  : 000011
+-- ANDN (op1 and not op2) : 000011
+-- OR : 000100
+-- ORN : 000101
+-- XOR : 000110
+-- XNOR : 000111
 
 
 begin
@@ -59,9 +62,21 @@ process(ALUOP, Oper1,Oper2)
 				
 			when 	"000010" => 
 				Salida <= Oper1 and Oper2;
-													
+										
 			when 	"000011" => 
+				Salida <= Oper1 and not Oper2;
+			
+			when 	"000100" => 
 				Salida <= Oper1 or Oper2;
+										
+			when 	"000101" => 
+				Salida <= Oper1 or not Oper2;
+			
+			when 	"000110" => 
+				Salida <= Oper1 xor Oper2;
+										
+			when 	"000111" => 
+				Salida <= Oper1 xnor Oper2;
 										
 			
 			when others =>

@@ -40,7 +40,11 @@ architecture Behavioral of CU is
 -- ADD : 000000
 -- SUB : 000001
 -- AND : 000010
--- OR  : 000011
+-- ANDN (op1 and not op2) : 000011
+-- OR : 000100
+-- ORN : 000101
+-- XOR : 000110
+-- XNOR : 000111
 
 
 begin
@@ -60,13 +64,23 @@ process(op, op3)
 					when "000001"	 => -- And
 						salida <= "000010";
 												
+					when "000101"	 => --Andn
+						Salida <= "000011";
 					
 					when "000010"	 => --or
-						salida <= "000011";
+						Salida <= "000100";
 												
-								
+					when "000110"	 => --orn
+						Salida <= "000101";
+					
+					when "000011"	 => --xor
+						Salida <= "000110";
+												
+					when 	"000111" => --xnor
+						Salida <= "000111";
+					
 					when others =>
-						salida <= (others=>'1'); --error
+						Salida <= (others=>'1'); --error
 					
 					end case;
 			else
