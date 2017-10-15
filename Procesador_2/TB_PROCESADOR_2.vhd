@@ -32,10 +32,10 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY TB_Procesador_1 IS
-END TB_Procesador_1;
+ENTITY TB_PROCESADOR_2 IS
+END TB_PROCESADOR_2;
  
-ARCHITECTURE behavior OF TB_Procesador_1 IS 
+ARCHITECTURE behavior OF TB_PROCESADOR_2 IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
