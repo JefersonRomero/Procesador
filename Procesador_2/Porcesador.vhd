@@ -65,6 +65,7 @@ PORT(
 		 Oper1 : in  STD_LOGIC_VECTOR (31 downto 0);
        Oper2 : in  STD_LOGIC_VECTOR (31 downto 0);
 		 ALUOP : in  STD_LOGIC_VECTOR (5 downto 0);
+		 Carry : in STD_LOGIC;
        Salida : out  STD_LOGIC_VECTOR (31 downto 0));
 	END COMPONENT;	
 	
@@ -88,9 +89,9 @@ PORT(
 	
 COMPONENT RF
 PORT(	
-		 RS1 : in  STD_LOGIC_VECTOR(4 DOWNTO 0);
-       RS2 : in  STD_LOGIC_VECTOR(4 DOWNTO 0);
-       RD : in  STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 RS1 : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
+       RS2 : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
+       RD : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
        DWR : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
        Rst_RF : in  STD_LOGIC;
        CRS1 : out  STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -103,6 +104,42 @@ PORT(
        SEUIMM : out  STD_LOGIC_VECTOR(31 DOWNTO 0));
 	END COMPONENT;	
 	
+	
+	
+COMPONENT PSR_Modifier
+ Port ( crs1 : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
+		  crs2 : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
+		  Aluop : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
+		  Aluresult : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
+		  Reset : in  STD_LOGIC;
+		  NZVC : out  STD_LOGIC_VECTOR(3 DOWNTO 0));
+END COMPONENT;
+
+
+COMPONENT PSR
+ Port ( NZVC : in  STD_LOGIC_VECTOR(3 DOWNTO 0);
+		  Reset : in  STD_LOGIC;
+		  Clk : in  STD_LOGIC;
+		  nCWP: in STD_LOGIC;
+		  CWP: out STD_LOGIC;
+		  C : out  STD_LOGIC);
+END COMPONENT;
+
+
+COMPONENT Windows_Manager
+Port ( RS1 : in  STD_LOGIC_VECTOR (4 DOWNTO 0);
+	    RS2 : in  STD_LOGIC_VECTOR (4 DOWNTO 0);
+	    RD : in  STD_LOGIC_VECTOR (4 DOWNTO 0);
+	    OP : in  STD_LOGIC_VECTOR (1 DOWNTO 0);
+       OP3 : in  STD_LOGIC_VECTOR (5 DOWNTO 0);
+	    CWP : in  STD_LOGIC;
+	    nRS1 : out  STD_LOGIC_VECTOR (5 DOWNTO 0);
+	    nRS2 : out  STD_LOGIC_VECTOR (5 DOWNTO 0);
+	    nRD : out  STD_LOGIC_VECTOR (5 DOWNTO 0);
+	    nCWP : out  STD_LOGIC);
+END COMPONENT;			  
+			  
+	
 SIGNAL AUX_nPC: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
 SIGNAL AUX_PC: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
 SIGNAL AUX_SUMADOR: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
@@ -113,6 +150,18 @@ SIGNAL AUX_Salida_ALU: STD_LOGIC_VECTOR(31 DOWNTO 0):="0000000000000000000000000
 SIGNAL AUX_Salida_CU: STD_LOGIC_VECTOR(5 DOWNTO 0):="000000";
 SIGNAL AUX_SEU: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
 SIGNAL AUX_Salida_MUX: STD_LOGIC_VECTOR(31 DOWNTO 0):="00000000000000000000000000000000";
+SIGNAL AUX_NZVC: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";
+SIGNAL AUX_C: STD_LOGIC := '0';
+SIGNAL AUX_CWP: STD_LOGIC := '0';
+SIGNAL AUX_NCWP: STD_LOGIC := '0';
+SIGNAL AUX_nRS1: STD_LOGIC_VECTOR(5 DOWNTO 0) := "000000";
+SIGNAL AUX_nRS2: STD_LOGIC_VECTOR(5 DOWNTO 0) := "000000";
+SIGNAL AUX_nRD: STD_LOGIC_VECTOR(5 DOWNTO 0) := "000000";
+
+
+
+
+
 
 begin
 
@@ -143,10 +192,24 @@ Instrution_Memory: IM PORT MAP(
    instruccion => AUX_IM
 );
 
+WindowsManeger: Windows_Manager PORT MAP(
+	 RS1 => AUX_IM (18 downto 14), 
+	 RS2 => AUX_IM (4 downto 0), 
+	 RD => AUX_IM (29 downto 25),  
+	 OP => AUX_IM (31 downto 30), 
+	 OP3 => AUX_IM (24 downto 19) , 
+	 CWP => AUX_CWP, 
+	 nRS1 => AUX_nRS1,
+	 nRS2 =>	AUX_nRS2,
+	 nRD => AUX_nRD, 
+	 nCWP => AUX_NCWP  
+
+);
+
 Register_File: RF PORT MAP(
-	RS1 => AUX_IM (18 downto 14), 
-   RS2 => AUX_IM (4 downto 0), 
-   RD => AUX_IM (29 downto 25), 
+	RS1 => AUX_nRS1,
+   RS2 => AUX_nRS2,
+   RD => AUX_nRD, 
    DWR => AUX_Salida_ALU, 
    Rst_RF => rstIn, 
    CRS1 => AUX_CRS1, 
@@ -177,7 +240,28 @@ Arithmetic_Logic_Unit: ALU PORT MAP(
 	Oper1 => AUX_CRS1,
    Oper2 => AUX_Salida_MUX,
    ALUOP => AUX_Salida_CU,
+	Carry => AUX_C,
    Salida => AUX_Salida_ALU
+);
+
+
+PSRModifier : PSR_MODIFIER PORT MAP(
+	crs1 => AUX_CRS1,
+   crs2 => AUX_Salida_MUX,
+   Aluop => AUX_Salida_CU,
+   Aluresult => AUX_Salida_ALU,
+   Reset => rstIn,
+   NZVC => AUX_NZVC
+);
+
+PSR_MODULE: PSR PORT MAP(
+	NZVC => AUX_NZVC,
+   Reset => rstIn,
+   Clk => CLKIn,
+	nCWP => AUX_NCWP,
+   CWP => AUX_CWP,
+   C => AUX_C
+
 );
 
 ALURESULT <= AUX_Salida_ALU;

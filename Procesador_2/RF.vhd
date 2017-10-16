@@ -32,9 +32,9 @@ use IEEE.std_logic_unsigned.all;
 --use UNISIM.VComponents.all;
 
 entity RF is
-    Port ( RS1 : in  STD_LOGIC_VECTOR(4 DOWNTO 0);
-           RS2 : in  STD_LOGIC_VECTOR(4 DOWNTO 0);
-           RD : in  STD_LOGIC_VECTOR(4 DOWNTO 0);
+    Port ( RS1 : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
+           RS2 : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
+           RD : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
            DWR : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
            Rst_RF : in  STD_LOGIC;
            CRS1 : out  STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -43,7 +43,7 @@ end RF;
 
 architecture Behavioral of RF is
 
-type reg is array (0 to 31) of std_logic_vector (31 downto 0);
+type reg is array (0 to 39) of std_logic_vector (31 downto 0);
 
 signal MyReg : reg := (others => x"00000000");
 
@@ -63,6 +63,7 @@ Begin
 		else 
 			CRS1 <= (others=>'0');
 			CRS2 <= (others=>'0');
+			MyReg <= (others => x"00000000");
 		end if;
 	end process;
 

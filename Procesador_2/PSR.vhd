@@ -33,6 +33,8 @@ entity PSR is
     Port ( NZVC : in  STD_LOGIC_VECTOR(3 DOWNTO 0);
 			  Reset : in  STD_LOGIC;
 			  Clk : in  STD_LOGIC;
+			  nCWP: in STD_LOGIC;
+			  CWP: out STD_LOGIC;
            C : out  STD_LOGIC);
 end PSR;
 
@@ -44,9 +46,11 @@ begin
 	begin
 		if Reset='1' then
 			C <= '0';
+			CWP <= '0';
 		else
 			if rising_edge(Clk) then
 				C<=NZVC(0);
+				CWP <= nCWP;
 			end if;
 		end if;
 	end process;
