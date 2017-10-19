@@ -47,6 +47,7 @@ end Windows_Manager;
 
 architecture Behavioral of Windows_Manager is
 
+
 begin
 
 Process(RS1, RS2, RD, OP, OP3, CWP)
@@ -69,6 +70,10 @@ Begin
 	
 	elsif (RS1 >= "01000" and RS1 <= "01111") then
 		nRS1 <=conv_std_logic_vector(( conv_integer(RS1) + conv_integer(CWP) * 16),6); --output
+	
+	elsif (RS1 >= "00000" and RS1 <= "00111") then 
+		nRS1 <=conv_std_logic_vector(( conv_integer(RS1)),6);
+			
 		
 	end if;
 	
@@ -83,11 +88,14 @@ Begin
 	
 	elsif (RS2 >= "01000" and RS2 <= "01111") then
 		nRS2 <=conv_std_logic_vector(( conv_integer(RS2) + conv_integer(CWP) * 16),6); --output
+		
+	elsif (RS2 >= "00000" and RS2 <= "00111") then 
+		nRS2 <=conv_std_logic_vector(( conv_integer(RS2)),6);	
 	
 	end if;
 	
 	
-	--goli rd
+	--rd
 	if (RD >= "10000" and RD <= "10111") then
 		nRD <=conv_std_logic_vector(( conv_integer(RD) + conv_integer(CWP) * 16),6); --local 
 	
@@ -97,6 +105,8 @@ Begin
 	elsif (RD >= "01000" and RD <= "01111") then
 		nRD <=conv_std_logic_vector(( conv_integer(RD) + conv_integer(CWP) * 16),6); --output
 	
+	elsif (RD >= "00000" and RD <= "00111") then 
+		nRD <=conv_std_logic_vector((conv_integer(RD)),6);	
 	end if;
 			
 

@@ -37,28 +37,7 @@ end CU;
 
 architecture Behavioral of CU is
 
--- ADD : 000000
--- SUB : 000001
--- AND : 000010
--- ANDN : 000011
--- OR : 000100
--- ORN : 000101
--- XOR : 000110
--- XNOR : 000111
--- Andcc : 010001
--- Nandcc : 010101  
--- Orcc :	010010  
--- Norcc : 010110  
--- Xorcc : 010011  
--- Xnorcc : 010111  
--- Addcc : 010000  
--- Addx :	001000  
--- Addxcc : 011000  
--- Subcc : 010100  
--- Subx :	001100  
--- Subxcc : 011100  
--- SLL : 100101  
--- SRL :	100110 
+
 
 begin
 process(op, op3)

@@ -42,13 +42,13 @@ architecture Behavioral of PSR is
 
 begin
 
-	process(Reset,Clk,NZVC)
+	process(Clk)
 	begin
-		if Reset='1' then
-			C <= '0';
-			CWP <= '0';
-		else
-			if rising_edge(Clk) then
+		if rising_edge(Clk) then
+			if Reset='1' then
+				C <= '0';
+				CWP <= '0';
+			else
 				C<=NZVC(0);
 				CWP <= nCWP;
 			end if;

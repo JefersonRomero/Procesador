@@ -19,6 +19,8 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.numeric_std.all;
+use IEEE.std_logic_unsigned.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -40,6 +42,8 @@ end PSR_Modifier;
 
 architecture Behavioral of PSR_Modifier is
 
+
+
 begin
 
 Process(crs1, crs2, Aluop, Aluresult, Reset)
@@ -49,7 +53,7 @@ Begin
 		
 	else	
 		--Logicas Andcc Nandcc Orcc Norcc Xorcc Xnorcc 
-		if Aluop = "001000" or Aluop = "001001" or Aluop = "001010" or ALuop = "001011" or Aluop = "001100" or ALuop = "001101" then 
+		if Aluop = "001000" or Aluop = "001001" or Aluop = "001010" or Aluop = "001011" or Aluop = "001100" or Aluop = "001101" then 
 			NZVC(3) <= Aluresult(31);
 			if Aluresult = "00000000000000000000000000000000" then 
 				NZVC(2) <= '1';
@@ -63,30 +67,33 @@ Begin
 		
 		--Aritmeticas
 				
-				
-			--Add
-			if ALuop = "001110" or Aluop = "010000" then
+
+			--Subcc Subxcc
+			if (Aluop = "010001" or Aluop = "010011") then
 				NZVC(3) <= Aluresult(31);
 				if Aluresult = "00000000000000000000000000000000" then 
 					NZVC(2) <= '1';
 				else
 					NZVC(2) <= '0';
 				end if;
-				NZVC(1) <= (crs1(31) and crs2(31) and (not ALuresult(31))) or ((not crs1(31)) and (not crs2(31)) and Aluresult(31));
-				NZVC(0) <= (crs1(31) and crs2(31)) or ((not ALuresult(31)) and (crs1(31) or crs2(31)));
-			end if;
-					
-					--Sub
-			if ALuop = "010001" or Aluop = "010011" then
-				NZVC(3) <= Aluresult(31);
-				if Aluresult = "00000000000000000000000000000000" then 
-					NZVC(2) <= '1';
-				else
-					NZVC(2) <= '0';
-				end if;
-				NZVC(1) <= (crs1(31) and (not crs2(31)) and (not ALuresult(31))) or ((not crs1(31)) and crs2(31) and Aluresult(31));
+				NZVC(1) <= (crs1(31) and (not crs2(31)) and (not Aluresult(31))) or ((not crs1(31)) and crs2(31) and Aluresult(31));
 				NZVC(0) <= ((not crs1(31)) and crs2(31)) or (Aluresult(31) and ((not crs1(31)) or crs2(31)));
 			end if;
+
+			
+			--Addcc Addxcc
+			if Aluop = "001110" or Aluop = "010000" then
+				NZVC(3) <= Aluresult(31);
+				if Aluresult = "00000000000000000000000000000000" then 
+					NZVC(2) <= '1';
+				else
+					NZVC(2) <= '0';
+				end if;
+				NZVC(1) <= (crs1(31) and crs2(31) and (not Aluresult(31))) or ((not crs1(31)) and (not crs2(31)) and Aluresult(31));
+				NZVC(0) <= (crs1(31) and crs2(31)) or ((not Aluresult(31)) and (crs1(31) or crs2(31)));
+			end if;
+					
+			
 			
 		end if;
 	end process;
