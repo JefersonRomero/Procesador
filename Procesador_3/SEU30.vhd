@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    19:22:21 10/21/2017 
+-- Create Date:    16:08:12 10/23/2017 
 -- Design Name: 
--- Module Name:    MUX_3 - Behavioral 
+-- Module Name:    SEU30 - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -17,6 +17,7 @@
 -- Additional Comments: 
 --
 ----------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -29,26 +30,29 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity MUX_3 is
-    Port ( RD : in  STD_LOGIC_VECTOR (5 downto 0);
-           RFDEST : in  STD_LOGIC;
-           nRD : out  STD_LOGIC_VECTOR (5 downto 0));
-end MUX_3;
+entity SEU30 is
+Port ( imm30 : in  STD_LOGIC_VECTOR (29 downto 0);
+       imm32 : out  STD_LOGIC_VECTOR (31 downto 0));
+end SEU30;
 
-architecture Behavioral of MUX_3 is
+architecture Behavioral of SEU30 is
+
+signal aux1: std_logic_vector(1 downto 0):=(others=>'0');
+signal aux2: std_logic_vector(1 downto 0):=(others=>'1');
 
 begin
 
-process(RFDEST, RD)
-Begin
-
-	if(RFDEST = '0') then
-		nRD <= RD;
-	else
-		nRD <= "001111";
+process(imm30)
+	begin
 	
-	end if;
+		if(imm30(29) = '0') then 
+			imm32 <= aux1 & imm30;
+		else 
+			imm32 <= aux2 & imm30;
+		end if;
+		
 end process;
 
 end Behavioral;
+
 

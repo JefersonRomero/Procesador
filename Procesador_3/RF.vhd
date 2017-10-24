@@ -37,6 +37,8 @@ entity RF is
            RD : in  STD_LOGIC_VECTOR(5 DOWNTO 0);
            DWR : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
            Rst_RF : in  STD_LOGIC;
+			  We : in STD_LOGIC;
+			  CRd : out STD_LOGIC_VECTOR(31 DOWNTO 0);
            CRS1 : out  STD_LOGIC_VECTOR(31 DOWNTO 0);
            CRS2 : out  STD_LOGIC_VECTOR(31 DOWNTO 0));
 end RF;
@@ -54,16 +56,18 @@ process(RS1,RS2,RD,DWR,Rst_RF)
 Begin
 	MyReg(0) <= x"00000000";
 	if Rst_RF = '0' then
-			if(RD/="00000")then
+			if((RD/="000000") and (We = '1'))then
 				Myreg(conv_integer(RD)) <= DWR; 
 			end if;
 			
 			CRS1 <= Myreg(conv_integer(RS1));
 			CRS2 <= Myreg(conv_integer(RS2));
+			Crd <= Myreg(conv_integer(RD));
 		else 
 			CRS1 <= (others=>'0');
 			CRS2 <= (others=>'0');
 			MyReg <= (others => x"00000000");
+			CRd <= (others => '0');
 		end if;
 	end process;
 
