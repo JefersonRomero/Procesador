@@ -51,7 +51,7 @@ entity Exe_mem is
 
 end Exe_mem;
 
-architecture arq_Exe of Exe_mem is
+architecture Behavioral of Exe_mem is
 
 begin
 	process(clk)
@@ -66,6 +66,6 @@ begin
 	aluro<=aluri;
 	end if;
 end process;
-end arq_Exe;
+end Behavioral;
 
 

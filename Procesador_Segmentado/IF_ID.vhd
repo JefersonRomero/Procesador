@@ -40,7 +40,7 @@ Port (PCI : in std_logic_vector (31 downto 0);
 
 end IF_ID;
 
-architecture arq_IF of IF_ID is
+architecture Behavioral of IF_ID is
 
 begin
 	process(clk)
@@ -50,5 +50,5 @@ begin
 	InstructionO <= InstructionI;
 	end if;
 	end process;
-end arq_IF;
+end Behavioral;
 

@@ -59,7 +59,7 @@ entity ID_Ex is
 
 end ID_Ex;
 	
-architecture arq_ID of ID_Ex is
+architecture Behavioral of ID_Ex is
 
 begin
 	process(clk)
@@ -78,5 +78,5 @@ begin
 	crs2o<=crs2i;
 	end if;
 end process;
-end arq_ID;
+end Behavioral;
 
